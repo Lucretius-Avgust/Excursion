@@ -38,6 +38,7 @@ class CRUDBase(Generic[ModelType]):
         extra_fields: Optional[dict[str, Any]] = None,
     ) -> ModelType:
         obj_data = obj_in.model_dump()
+        obj_data.pop("password", None)
 
         if extra_fields:
             obj_data.update(extra_fields)

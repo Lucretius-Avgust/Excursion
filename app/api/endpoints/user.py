@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
@@ -13,6 +13,7 @@ from app.api.validators import (
 )
 from app.crud import user_crud
 from app.models.user import User, UserRole
+from app.services.auth_service import hash_password
 
 
 router = APIRouter(prefix="/user", tags=["User"])

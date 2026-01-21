@@ -7,7 +7,7 @@ from sqlalchemy.schema import UniqueConstraint, Index
 from app.core.db import Base
 from app.models.mixins.timestamp import TimestampMixin
 from app.core.constants import (
-    USERNAME_LEN, EMAIL_LEN, PHONE_LEN, PASSWORD_LEN
+    USERNAME_LEN, EMAIL_LEN, PHONE_LEN, HASHED_PASSWORD_LEN
 )
 
 
@@ -36,8 +36,14 @@ class UserRole(IntEnum):
 
 class User(Base, TimestampMixin):
 
-    username: Mapped[str] = mapped_column(
+    first_name: Mapped[str] = mapped_column(
         String(USERNAME_LEN), nullable=False
+    )
+    last_name: Mapped[str] = mapped_column(
+        String(USERNAME_LEN), nullable=False
+    )
+    middle_name: Mapped[str] = mapped_column(
+        String(USERNAME_LEN), nullable=True
     )
     email: Mapped[str] = mapped_column(
         String(EMAIL_LEN), nullable=False
@@ -46,7 +52,7 @@ class User(Base, TimestampMixin):
         String(PHONE_LEN), nullable=True
     )
     hashed_password: Mapped[str] = mapped_column(
-        String(PASSWORD_LEN), nullable=False
+        String(HASHED_PASSWORD_LEN), nullable=False
     )
     role: Mapped[UserRole] = mapped_column(
         Enum(UserRole, name="user_role"),
@@ -59,7 +65,6 @@ class User(Base, TimestampMixin):
 
     __table_args__ = (
         UniqueConstraint("email", name="uq_users_email"),
-        UniqueConstraint("username", name="uq_users_username"),
         Index("ix_users_email", "email"),
         Index("ix_users_role", "role"),
     )

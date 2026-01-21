@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from uuid import UUID
 
+from app.core.constants import PASSWORD_LEN_MAX, PASSWORD_LEN_MIN
 
 class UserCreate(BaseModel):
     first_name: str
@@ -9,7 +10,11 @@ class UserCreate(BaseModel):
     middle_name: Optional[str] = None
     email: EmailStr
     phone: Optional[str] = None
-    password: str
+    password: str = Field(
+        ...,
+        min_length=PASSWORD_LEN_MIN,
+        max_length=PASSWORD_LEN_MAX
+    )
 
 
 class UserLogin(BaseModel):

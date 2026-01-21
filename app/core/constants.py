@@ -19,8 +19,14 @@ EMAIL_LEN = 128
 PHONE_LEN = 12
 """Длина телефона."""
 
-PASSWORD_LEN = 50
-"""Длина пароля."""
+HASHED_PASSWORD_LEN = 128
+"""Длина хэшированного пароля."""
+
+PASSWORD_LEN_MIN = 8
+"""Длина пароля минимальное."""
+
+PASSWORD_LEN_MAX = 255
+"""Длина пароля максимальное."""
 
 SECRET_KEY = settings.secret
 """Секретный ключ."""
