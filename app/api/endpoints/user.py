@@ -1,9 +1,8 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, HTTPException
 
-from app.core.db import get_async_session
+from app.api.dependencies import GuideOrAdmin, CurrentUser, SessionDep
 from app.shemas.user import UserCreate, UserRead, UserUpdate
 from app.api.validators import (
     check_object_by_id,
@@ -24,13 +23,16 @@ router = APIRouter(prefix="/user", tags=["User"])
     response_model=UserRead
 )
 async def get_user_by_id(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_async_session),
+    current_user: CurrentUser,
+    session: SessionDep,
+    user_id: UUID
 ) -> User:
+    if current_user.id != user_id and current_user.role not in (UserRole.ADMIN, UserRole.GUIDE):
+        raise HTTPException(status_code=403, detail="Недостаточно прав")
     result = await check_object_by_id(
         crud=user_crud,
+        session=session,
         obj_id=user_id,
-        session=session
     )
     return result
 
@@ -40,7 +42,8 @@ async def get_user_by_id(
     response_model=list[UserRead]
 )
 async def get_user_all(
-    session: AsyncSession = Depends(get_async_session)
+    _: GuideOrAdmin,
+    session: SessionDep
 ):
     results = await check_objects(
         crud=user_crud,
@@ -57,7 +60,7 @@ async def get_user_all(
 )
 async def create_user(
     user: UserCreate,
-    session: AsyncSession = Depends(get_async_session)
+    session: SessionDep
 ):
     await check_create_user(
         login=user.email or user.phone,
@@ -83,7 +86,7 @@ async def create_user(
 async def udpade_user(
     user_id: UUID,
     obj_in: UserUpdate,
-    session: AsyncSession = Depends(get_async_session)
+    session: SessionDep
 ):
     user = await check_object_by_id(
         crud=user_crud,

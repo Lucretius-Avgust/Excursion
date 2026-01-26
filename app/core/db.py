@@ -1,12 +1,13 @@
-import uuid
+from uuid import uuid4
 
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 from uuid import UUID
 
 from app.core.config import settings
-
+from app.core.constants import UUID_LEN
 
 class PreBase:
     """
@@ -22,11 +23,13 @@ class PreBase:
         return cls.__name__.lower()
 
     id: Mapped[UUID] = mapped_column(
+        String(UUID_LEN),
         primary_key=True,
-        default=uuid.uuid4,
+        default=lambda: str(uuid4()),
         unique=True,
         nullable=False,
     )
+
 
 
 Base = declarative_base(cls=PreBase)

@@ -10,6 +10,9 @@ LOG_DIR = os.path.join(BASE_DIR, "logs")
 LOG_FORMAT = "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s"
 """Формат для логов."""
 
+UUID_LEN = 36
+"""Длина uuid."""
+
 USERNAME_LEN = 50
 """Длина имени."""
 
